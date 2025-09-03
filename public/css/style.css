@@ -115,3 +115,17 @@ body{
     background-color: #fe424d !important;
     border: none !important;    
 }
+
+/* SHOW LISTING PAGE */
+.show-img{
+    height: 30vh;
+}
+
+.btns{
+    display: flex;
+}
+
+.show-card {
+    padding-left: 0;
+    padding-right: 0;
+}
