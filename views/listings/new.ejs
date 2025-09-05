@@ -4,14 +4,15 @@
     <br>
     <h3> create a new listing! </h3>
     <br>
-    <form method="POST" action="/listings">
+    <form method="POST" action="/listings" novalidate class="needs-validation">
         <div class="mb-3">
             <label for="title" class="form-label">Title</label>
             <input 
             name="listing[title]" 
             placeholder="enter title" 
             type="text" 
-            class="form-control">
+            class="form-control"
+            required>
         
         </div>
 
@@ -19,7 +20,8 @@
             <label for="description" class="form-label">Description</label>
             <textarea 
             name="listing[description]" 
-            class="form-control"></textarea>  
+            class="form-control"
+            required></textarea>  
         </div>
 
         <div class="mb-3">
@@ -38,7 +40,8 @@
                 name="listing[price]" 
                 placeholder="enter price" 
                 type="number"
-                class="form-control">
+                class="form-control"
+                required>
             </div>
      
             <div class="mb-3 col-md-8">
@@ -47,7 +50,8 @@
                 name="listing[country]" 
                 placeholder="enter country" 
                 type="text"
-                class="form-control">
+                class="form-control"
+                required>
             </div>
 
         </div>
@@ -60,7 +64,8 @@
             name="listing[location]" 
             placeholder="enter location" 
             type="text"
-            class="form-control">
+            class="form-control"
+            required>
         </div>
         <br>
         <Button class="btn btn-dark add-btn"> Add </Button>
