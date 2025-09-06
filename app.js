@@ -54,10 +54,9 @@ app.get("/listings/:id" ,wrapAsync (async (req , res)=>{
 
 //CREATE ROUTE
 app.post("/listings" , wrapAsync (async(req , res , next)=>{
-        if(!req.body.Listing) {
-            throw new expressError(400 , "Send valid data for listing");
-        }
-        const newListing = new Listing(req.body.listing);
+        let result = listingSchema.validate(req.body);   
+        console.log(result);
+        const newListing = new Listing(req.body.Listing);
         await newListing.save();
         console.log(newListing);
         res.redirect("/listings");
@@ -109,7 +108,8 @@ app.use((req , res , next)=>{
 
 app.use((err , req , res , next)=>{
     let {statusCode=500 , message="Something went wrong"} = err;
-    res.status(statusCode).send(message);
+    res.status(statusCode).render("error.ejs" , {message});
+    // res.status(statusCode).send(message);
 });
 
 app.listen(8080 , ()=>{
