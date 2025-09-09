@@ -6,7 +6,9 @@ const path = require("path");
 const methoOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const wrapAsync = require("./utils/wrapAsync.js");
-const expressError = require("./utils/expressError.js")
+const expressError = require("./utils/expressError.js");
+// const {listingSchema} = require("./schema.js");
+const Review = require("./models/review.js");
 
 const mongo_url = "mongodb://127.0.0.1:27017/havenly";
 
@@ -87,6 +89,22 @@ app.delete("/listings/:id" , wrapAsync (async (req , res)=>{
     res.redirect("/listings")
 })
 );
+
+//REVIEWS
+//POST ROUTE
+
+app.post("/listings/:id/reviews" , async( req , res)=>{
+    let listing = await Listing.findById(req.params.id);
+    let newReview = new Review(req.body.review);
+
+    listing.reviews.push(newReview); 
+    await newReview.save();
+    await listing.save();
+
+    res.redirect(`/listings/${listing._id}`);
+
+});
+
 
 // app.get("/testlisting" , async (req , res)=>{
 //     let samplelisting = new Listing ({
