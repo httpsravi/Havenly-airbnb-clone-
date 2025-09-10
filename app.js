@@ -10,6 +10,8 @@ const expressError = require("./utils/expressError.js");
 const {listingSchema} = require("./schema.js");
 const Review = require("./models/review.js");
 
+const listings = require("./routes/listing.js");
+
 const mongo_url = "mongodb://127.0.0.1:27017/havenly";
 
 main().then(()=>{
@@ -34,62 +36,8 @@ app.get("/" , (req , res) => {
     res.send("working");                
 });
 
-//INDEX ROUTE
-app.get("/listings" , wrapAsync (async (req , res)=>{
-    const allListings = await Listing.find({});
-    res.render("listings/index.ejs" , {allListings});
-})
-);
 
-//NEW ROUTE
-app.get("/listings/new" , (req , res)=>{
-    res.render("listings/new");
-});
-
-//SHOW ROUTE
-app.get("/listings/:id" ,wrapAsync (async (req , res)=>{
-    let {id} = req.params;
-    const listing = await Listing.findById(id).populate("reviews");
-    
-    res.render("listings/show" , {listing});
-})
-);
-
-//CREATE ROUTE
-app.post("/listings" , wrapAsync (async(req , res , next)=>{
-        let result = listingSchema.validate(req.body);   
-        console.log(result);
-        const newListing = new Listing(req.body.Listing);
-        await newListing.save();
-        console.log(newListing);
-        res.redirect("/listings");
-    })
-);
-
-//EDIT ROUTE 
-app.get("/listings/:id/edit" ,wrapAsync (async (req , res)=>{
-    let {id} = req.params;
-    const listing = await Listing.findById(id);
-    res.render("listings/edit.ejs" , {listing});
-})
-);
-
-//UPDATE ROUTE
-app.put("/listings/:id" , wrapAsync (async (req , res)=>{
-    let {id} = req.params;
-    await Listing.findByIdAndUpdate(id , {...req.body.listing});
-    res.redirect(`/listings/${id}`);
-})
-);
-
-//DELETE ROUTE
-app.delete("/listings/:id" , wrapAsync (async (req , res)=>{
-    let {id} = req.params;
-    let deletedListing = await Listing.findByIdAndDelete(id);
-    console.log(deletedListing);
-    res.redirect("/listings")
-})
-);
+app.use("/listings" , listings);
 
 //REVIEWS
 //POST ROUTE
