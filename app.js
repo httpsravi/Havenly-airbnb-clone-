@@ -7,7 +7,7 @@ const methoOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const wrapAsync = require("./utils/wrapAsync.js");
 const expressError = require("./utils/expressError.js");
-// const {listingSchema} = require("./schema.js");
+const {listingSchema} = require("./schema.js");
 const Review = require("./models/review.js");
 
 const mongo_url = "mongodb://127.0.0.1:27017/havenly";
@@ -49,7 +49,8 @@ app.get("/listings/new" , (req , res)=>{
 //SHOW ROUTE
 app.get("/listings/:id" ,wrapAsync (async (req , res)=>{
     let {id} = req.params;
-    const listing = await Listing.findById(id);
+    const listing = await Listing.findById(id).populate("reviews");
+    
     res.render("listings/show" , {listing});
 })
 );
@@ -97,7 +98,7 @@ app.post("/listings/:id/reviews" , async( req , res)=>{
     let listing = await Listing.findById(req.params.id);
     let newReview = new Review(req.body.review);
 
-    listing.reviews.push(newReview); 
+    listing.reviews.push(newReview._id); 
     await newReview.save();
     await listing.save();
 
