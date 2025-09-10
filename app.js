@@ -1,16 +1,13 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const Listing = require("./models/listing.js");
 const path = require("path");
 const methoOverride = require("method-override");
 const ejsMate = require("ejs-mate");
-const wrapAsync = require("./utils/wrapAsync.js");
 const expressError = require("./utils/expressError.js");
-const {listingSchema} = require("./schema.js");
-const Review = require("./models/review.js");
 
 const listings = require("./routes/listing.js");
+const reviews = require("./routes/review.js");
 
 const mongo_url = "mongodb://127.0.0.1:27017/havenly";
 
@@ -38,49 +35,7 @@ app.get("/" , (req , res) => {
 
 
 app.use("/listings" , listings);
-
-//REVIEWS
-//POST ROUTE
-
-app.post("/listings/:id/reviews" , async( req , res)=>{
-    let listing = await Listing.findById(req.params.id);
-    let newReview = new Review(req.body.review);
-
-    listing.reviews.push(newReview._id); 
-    await newReview.save();
-    await listing.save();
-
-    res.redirect(`/listings/${listing._id}`);
-
-});
-
-//DELETE REVIEW ROUTE
-
-app.delete(
-    "/listings/:id/reviews/:reviewId" , 
-    wrapAsync(async(req , res)=>{
-        let {id , reviewId} = req.params;
-
-        await Listing.findByIdAndUpdate(id , {$pull:{reviews:reviewId}});
-        await Review.findByIdAndDelete(reviewId);
-
-        res.redirect(`/listings/${id}`);
-}));
-
-
-// app.get("/testlisting" , async (req , res)=>{
-//     let samplelisting = new Listing ({
-//         title:"my new villa",
-//         description: "by the beach",
-//         price: 1200,
-//         location: "calunguate , Goa",
-//         country:"India"
-//     });
-    
-//     await samplelisting.save();
-//     console.log("sample was saved");
-//     res.send("saved succesfully");
-// });
+app.use("/listings/:id/reviews" , reviews);
 
 app.use((req , res , next)=>{
     next(new expressError(404 , "page not found"));
